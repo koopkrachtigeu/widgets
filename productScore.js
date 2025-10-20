@@ -105,10 +105,12 @@ async function initKoopkracht(id, containerEl) {
 }
 
 // === 5️⃣ AUTOMATISCH ALLE WIDGETS LADEN ===
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".koopkracht-widget").forEach(div => {
+(function startKoopkracht() {
+  const widgets = document.querySelectorAll(".koopkracht-widget");
+  if (widgets.length === 0) return setTimeout(startKoopkracht, 300);
+  widgets.forEach(div => {
     const id = div.dataset.id;
     div.innerHTML = "⏳ Koopkrachtgegevens laden...";
     initKoopkracht(id, div);
   });
-});
+})();
