@@ -86,7 +86,6 @@ function renderKoopkrachtBox(data, compact = false) {
       font-family:Arial,sans-serif;
       margin-bottom:20px;
       padding:${compact ? "15px 20px" : "20px 25px 20px 20px"};
-      width:100%;
       font-size:${compact ? "14px" : "16px"};">
       
       <!-- SCORES -->
