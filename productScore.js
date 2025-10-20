@@ -1,6 +1,6 @@
 /* =====================================================
- 🛍️ KOOPKRACHT WIDGET v1.1
- © 2025 - Fix: use score_types from API + safe title escaping
+ 🛍️ KOOPKRACHT WIDGET v1.2
+ © 2025 - Correct alternating row colors + API beschrijvingen
  ===================================================== */
 
 // === 1️⃣ LAND OPHALEN VIA IP ===
@@ -17,21 +17,17 @@ async function getCountry() {
 
 // === 2️⃣ HELPER VOOR STERREN ===
 function makeStars(score) {
-  const fullStar = "⭐";
   const n = Math.max(0, Math.min(5, Number(score) || 0));
-  return fullStar.repeat(n);
+  return "⭐".repeat(n);
 }
 
-// small helper to escape quotes for HTML attributes (title)
 function escapeAttr(s) {
-  if (s == null) return "";
-  return String(s).replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return String(s || "").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// === 3️⃣ HTML TEMPLATE ===
+// === 3️⃣ TEMPLATE RENDEREN ===
 function renderKoopkrachtBox(data) {
   const review = data.review || {};
-  // Use score_types from API if present, otherwise default fallback
   const scoreTypes = Array.isArray(data.score_types) && data.score_types.length
     ? data.score_types
     : [
@@ -42,7 +38,6 @@ function renderKoopkrachtBox(data) {
         { score_type: "score_comfort", beschrijving: "Comfort in gebruik" }
       ];
 
-  // icons keyed by normalized key (without "score_" prefix)
   const icons = {
     prijs: "💰",
     installatie: "⚙️",
@@ -51,37 +46,34 @@ function renderKoopkrachtBox(data) {
     comfort: "🛋"
   };
 
-  const scoreRows = scoreTypes.map(st => {
-    // normalize: if API gives "score_prijs", convert to "prijs"
-    let raw = (st.score_type || "").toString();
-    let key = raw.startsWith("score_") ? raw.slice(6) : raw;
-    key = key.toLowerCase();
-
-    // The review object stores scores under keys like "score_prijs"
-    const scoreKeyInReview = "score_" + key;
-    const score = review[scoreKeyInReview] ?? review[key] ?? 0;
-
-    const beschrijving = st.beschrijving || "";
-    const titleSafe = escapeAttr(beschrijving);
-
+  const scoreRows = scoreTypes.map((st, i) => {
+    const raw = (st.score_type || "").toLowerCase();
+    const key = raw.startsWith("score_") ? raw.slice(6) : raw;
+    const scoreKey = "score_" + key;
+    const score = review[scoreKey] ?? review[key] ?? 0;
+    const beschrijving = escapeAttr(st.beschrijving || "");
     const label = key.charAt(0).toUpperCase() + key.slice(1);
-
-    // fallback icon
     const icon = icons[key] || "⭐";
+    const bg = i % 2 === 0 ? "#f9f9f9" : "#fff"; // alternating background
 
     return `
-      <div class="score-row" style="align-items:center;border-radius:6px;display:flex;justify-content:space-between;margin-bottom:6px;padding:8px;background:${Math.random()>0.5?"#f9f9f9":"#fff"};">
-        <div style="align-items:center;display:flex;gap:8px;">
-          <span style="font-size:18px;line-height:1">${icon}</span>
-          <span style="font-weight:600;">${label}</span>
-          <span style="color:#555;cursor:help;font-size:14px;" title="${titleSafe}">ℹ️</span>
+      <div class="score-row" style="
+        align-items:center;
+        background:${bg};
+        border-radius:6px;
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:4px;
+        padding:8px;">
+        <div style="align-items:center;display:flex;gap:5px;">
+          ${icon} <span>${label}</span>
+          <span style="color:#555;cursor:help;font-size:14px;" title="${beschrijving}">ℹ️</span>
         </div>
-        <div style="font-size:18px;">${makeStars(score)}</div>
-      </div>
-    `;
+        <div>${makeStars(score)}</div>
+      </div>`;
   }).join("");
 
-  const affiliate = Array.isArray(data.affiliates) && data.affiliates.length ? data.affiliates[0] : null;
+  const affiliate = data.affiliates?.[0];
   const affiliateUrl = affiliate?.affiliate_url || "#";
   const partner = affiliate?.affiliate_partner || "Webshop";
 
@@ -95,7 +87,7 @@ function renderKoopkrachtBox(data) {
       <div class="product-image" style="flex:1 1 200px;margin-top:10px;min-width:200px;text-align:center;">
         <a href="${escapeAttr(affiliateUrl)}" target="_blank" rel="noopener noreferrer" style="margin:0 auto;display:inline-block;">
           <img src="https://blogger.googleusercontent.com/img/a/AVvXsEiCryJ3N69e7Q_GrOA43NhisYRevjBTPBqpr9hZCaxC6ZXyDs97wajRFHHTiiyRSEiM2tsDbqJ4frf-NtWE3-ZgUx9Gy5Im9_hLMnIYrXvEBQgxnVuYDBZgaFXkMcBVd08WwLTbpZs0q4A_DJPYWdXkh-DzeuLyO_pElYt9VgcFSoJ23y0DppQm4ZEIGq8C"
-               alt="Product afbeelding" width="320" style="opacity:1; transition:opacity 0.3s;">
+               alt="Product afbeelding" width="320" style="opacity:1;transition:opacity 0.3s;">
         </a>
       </div>
 
@@ -108,46 +100,39 @@ function renderKoopkrachtBox(data) {
           <span style="font-size:small;">(affiliate link)</span>
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-// === 4️⃣ INIT FUNCTIE ===
+// === 4️⃣ INIT ===
 async function initKoopkracht(id, containerEl) {
-  const el = containerEl || document.getElementById("koopkracht-container");
+  const el = containerEl;
   if (!el) return;
 
   try {
     const country = await getCountry();
     const url = `https://script.google.com/macros/s/AKfycbw_7AV-HIqLMy7iWWO9IKSXfjufFgSlChgcdqfcbZ2-I3Lg-jDh_yQN77BPSBwhw1Wl/exec?country=${country}&id=${encodeURIComponent(id)}`;
     console.log("🔗 Fetching koopkracht:", url);
-    const res = await fetch(url);
-    // quick check for non-200
-    if (!res.ok) {
-      console.error("Koopkracht API returned HTTP", res.status);
-      el.innerHTML = "<p>Kon gegevens niet laden (serverfout).</p>";
-      return;
-    }
-    const data = await res.json();
-    console.log("📦 Koopkracht response", data);
 
-    if (data.success) el.innerHTML = renderKoopkrachtBox(data);
-    else el.innerHTML = "<p>Geen koopkrachtgegevens gevonden.</p>";
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    console.log("📦 Koopkracht data:", data);
+
+    el.innerHTML = data.success ? renderKoopkrachtBox(data) : "<p>Geen koopkrachtgegevens gevonden.</p>";
   } catch (err) {
-    console.error("Fout bij laden:", err);
+    console.error("❌ Fout bij laden:", err);
     el.innerHTML = "<p>Kon gegevens niet laden.</p>";
   }
 }
 
-// === 5️⃣ AUTOSTART (Blogger-safe: retry until div appears) ===
+// === 5️⃣ AUTOSTART (Blogger-safe) ===
 (function startKoopkracht() {
   const widgets = document.querySelectorAll(".koopkracht-widget");
   if (widgets.length === 0) {
-    // retry a couple times (Blogger may inject content async)
     if ((startKoopkracht._tries = (startKoopkracht._tries || 0) + 1) < 20) {
       return setTimeout(startKoopkracht, 250);
     }
-    console.warn("No .koopkracht-widget elements found after retries.");
+    console.warn("No koopkracht-widget elements found after retries.");
     return;
   }
 
