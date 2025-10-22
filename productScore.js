@@ -72,6 +72,7 @@ function renderKoopkrachtBox(data, compact = false) {
 
   const affiliate = data.affiliates?.[0];
   const affiliateUrl = affiliate?.affiliate_url || "#";
+  const affiliateImg = affiliate?.affiliate_img || "#";
   const partner = affiliate?.affiliate_partner || "Webshop";
 
   return `
@@ -97,7 +98,7 @@ function renderKoopkrachtBox(data, compact = false) {
       <!-- IMAGE -->
       <div class="product-image" style="flex:1 1 180px;margin-top:${compact ? 6 : 10}px;min-width:180px;text-align:center;">
         <a href="${escapeHtml(affiliateUrl)}" target="_blank" rel="noopener noreferrer">
-          <img src="https://blogger.googleusercontent.com/img/a/AVvXsEiCryJ3N69e7Q_GrOA43NhisYRevjBTPBqpr9hZCaxC6ZXyDs97wajRFHHTiiyRSEiM2tsDbqJ4frf-NtWE3-ZgUx9Gy5Im9_hLMnIYrXvEBQgxnVuYDBZgaFXkMcBVd08WwLTbpZs0q4A_DJPYWdXkh-DzeuLyO_pElYt9VgcFSoJ23y0DppQm4ZEIGq8C"
+          <img src="${escapeHtml(affiliateImg)}"
                alt="Product afbeelding"
                width="${compact ? 220 : 320}"
                style="opacity:1;transition:opacity 0.3s;">
