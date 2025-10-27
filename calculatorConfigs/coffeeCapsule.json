@@ -115,7 +115,7 @@
       {"label":"Terugverdientijd (dagen)","value":"payback_days","precision":1}
     ]},
     {"label":"⏱️ Tijdsinvestering","fields":[
-      {"label":"Tijd per dag (minuten)","value":"time_per_day_minutes","precision":1},
+      {"label":"Tijd per dag (minuten)","value":"time_per_day_minutes","precision":1}
     ]},
     {"label":"🌍 Milieu-impact","fields":[
       {"label":"Wegwerpcapsules vermeden per jaar","value":"capsules_avoided_per_year","precision":0},
