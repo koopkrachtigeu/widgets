@@ -1,27 +1,16 @@
 {
-  "title": "Calculator voor Besparingen met Herbruikbare Koffiecapsules",
+  "title": "Bereken je Besparing met Herbruikbare Koffiecapsules",
   "description": "Bereken hoeveel geld, tijd en CO₂ je kunt besparen door over te stappen van wegwerpkoffiecapsules naar herbruikbare capsules.",
   "inputs": [
     {
-      "id":"coffee_price_per_kg",
-      "label":"Prijs van koffie per kg (€)",
-      "type":"number",
-      "default":25,
-      "min":5,
-      "max":80,
-      "step":0.5,
-      "hint":"De gemiddelde prijs van koffie die je gebruikt.",
-      "required":true
-    },
-    {
-      "id":"grams_per_capsule",
-      "label":"Gram koffie per capsule (g)",
+      "id":"coffees_per_day",
+      "label":"Aantal koffies per dag",
       "type":"slider",
-      "default":7,
-      "min":4,
-      "max":12,
-      "step":0.1,
-      "hint":"Hoeveel gram koffie gaat er gemiddeld in één capsule?",
+      "default":3,
+      "min":1,
+      "max":20,
+      "step":1,
+      "hint":"Hoeveel kopjes koffie drink je gemiddeld per dag?",
       "required":true
     },
     {
@@ -33,7 +22,7 @@
       "max":100,
       "step":0.5,
       "hint":"Wat kost een set van herbruikbare capsules?",
-      "required":true
+      "required":false
     },
     {
       "id":"capsules_in_set",
@@ -44,28 +33,6 @@
       "max":10,
       "step":1,
       "hint":"Aantal capsules per set.",
-      "required":true
-    },
-    {
-      "id":"coffees_per_day",
-      "label":"Aantal kopjes koffie per dag",
-      "type":"slider",
-      "default":3,
-      "min":1,
-      "max":10,
-      "step":1,
-      "hint":"Hoeveel kopjes koffie drink je gemiddeld per dag?",
-      "required":true
-    },
-    {
-      "id":"disposable_capsule_price",
-      "label":"Prijs per wegwerpcapsule (€)",
-      "type":"number",
-      "default":0.4,
-      "min":0.2,
-      "max":1.0,
-      "step":0.01,
-      "hint":"Wat betaal je per wegwerpcapsule?",
       "required":false
     },
     {
@@ -80,10 +47,43 @@
       "required":false
     },
     {
+      "id":"disposable_capsule_price",
+      "label":"Prijs per wegwerpcapsule (€)",
+      "type":"number",
+      "default":0.4,
+      "min":0.2,
+      "max":1.0,
+      "step":0.01,
+      "hint":"Wat betaal je per wegwerpcapsule?",
+      "required":false
+    },
+    {
+      "id":"coffee_price_per_kg",
+      "label":"Prijs van koffie per kg (€)",
+      "type":"number",
+      "default":25,
+      "min":5,
+      "max":80,
+      "step":0.5,
+      "hint":"De gemiddelde prijs van koffie die je gebruikt.",
+      "required":false
+    },
+    {
+      "id":"grams_per_capsule",
+      "label":"Gram koffie per capsule (g)",
+      "type":"slider",
+      "default":7,
+      "min":4,
+      "max":12,
+      "step":0.1,
+      "hint":"Hoeveel gram koffie gaat er gemiddeld in één capsule?",
+      "required":false
+    },
+    {
       "id":"time_per_capsule",
       "label":"Tijd om één capsule te vullen (seconden)",
       "type":"number",
-      "default":30,
+      "default":20,
       "min":10,
       "max":120,
       "step":1,
