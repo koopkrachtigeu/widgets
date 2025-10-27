@@ -50,7 +50,7 @@
       "id":"disposable_capsule_price",
       "label":"Prijs per wegwerpcapsule (€)",
       "type":"number",
-      "default":0.4,
+      "default":0.3,
       "min":0.2,
       "max":1.0,
       "step":0.01,
@@ -59,24 +59,24 @@
     },
     {
       "id":"coffee_price_per_kg",
-      "label":"Prijs van koffie per kg (€)",
+      "label":"Prijs van oploskoffie per kg (€)",
       "type":"number",
       "default":25,
       "min":5,
       "max":80,
       "step":0.5,
-      "hint":"De gemiddelde prijs van koffie die je gebruikt.",
+      "hint":"De gemiddelde prijs van de oploskoffie die je gebruikt.",
       "required":false
     },
     {
       "id":"grams_per_capsule",
       "label":"Gram koffie per capsule (g)",
       "type":"slider",
-      "default":7,
-      "min":4,
-      "max":12,
+      "default":2,
+      "min":1,
+      "max":10,
       "step":0.1,
-      "hint":"Hoeveel gram koffie gaat er gemiddeld in één capsule?",
+      "hint":"Hoeveel gram oploskoffie doe je gemiddeld in één capsule?",
       "required":false
     },
     {
@@ -108,17 +108,14 @@
   ],
   "outputs": [
     {"label":"💰 Financiële Besparingen","fields":[
-      {"label":"Kosten per herbruikbaar kopje (€)","value":"reusable_cost_per_cup","precision":3},
-      {"label":"Kosten per wegwerpkopje (€)","value":"disposable_cost_per_cup","precision":2},
+      {"label":"Kosten per herbruikbare capsule (€)","value":"reusable_cost_per_cup","precision":3},
+      {"label":"Kosten per wegwerp capsule (€)","value":"disposable_cost_per_cup","precision":2},
       {"label":"Besparing per kopje (€)","value":"savings_per_cup","precision":2},
-      {"label":"Besparing per week (€)","value":"savings_per_week","precision":2},
-      {"label":"Besparing per maand (€)","value":"savings_per_month","precision":2},
       {"label":"Besparing per jaar (€)","value":"savings_per_year","precision":2},
       {"label":"Terugverdientijd (dagen)","value":"payback_days","precision":1}
     ]},
     {"label":"⏱️ Tijdsinvestering","fields":[
       {"label":"Tijd per dag vullen (minuten)","value":"time_per_day_minutes","precision":1},
-      {"label":"Tijd per jaar vullen (uren)","value":"time_per_year_hours","precision":1}
     ]},
     {"label":"🌍 Milieu-impact","fields":[
       {"label":"Wegwerpcapsules vermeden per jaar","value":"capsules_avoided_per_year","precision":0},
