@@ -4,43 +4,48 @@
   const configUrl = container.getAttribute('data-config');
   if (!configUrl) return;
 
-  // ✅ UPDATED CSS with refined aesthetics and new classes
+  // ✅ FINAL UPDATED CSS with animation, accessibility, and SLIDER TRACK FIX
   const style = document.createElement('style');
   style.textContent = `
+    /* Keyframe Animation for Result Pop */
+    @keyframes result-pop {
+        0% { transform: scale(0.95); opacity: 0.5; color: #ff9800; }
+        50% { transform: scale(1.05); opacity: 1; }
+        100% { transform: scale(1); color: #2c6e49; }
+    }
+
     /* 1. General & Typography */
     .calculator-widget {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background:#f6f9f6;
-      padding:18px; /* Slightly more padding */
-      border-radius:14px; /* Slightly larger radius */
+      padding:18px; 
+      border-radius:14px; 
       box-sizing:border-box;
     }
     .calculator-widget h2 { 
-      color:#388e3c; /* Softer primary green */
+      color:#388e3c;
       font-weight: 700; 
-      margin-top: 5px; /* Less space at the top */
-      margin-bottom: 15px; 
+      margin-top: 5px;
+      margin-bottom: 20px;
     }
     .calculator-widget .inputs, .calculator-widget .outputs {
-      display:flex; flex-wrap:wrap; gap:20px; /* Increased gap */
+      display:flex; flex-wrap:wrap; gap:20px;
       margin-top:15px;
     }
 
-    /* 2. Card Styling (Aesthetic Enhancements) */
+    /* 2. Card Styling */
     .calculator-widget .card {
       background:#fff;
-      padding:15px; /* More padding inside cards */
+      padding:15px; 
       border-radius:12px;
-      /* Refined Multi-layered Shadow for better lift */
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 
                   0 1px 3px rgba(0, 0, 0, 0.08); 
       flex:1 1 200px;
       box-sizing:border-box;
-      /* Nice easing function for transitions */
       transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s;
     }
     .calculator-widget .card:hover {
-      transform: translateY(-4px); /* More noticeable lift */
+      transform: translateY(-4px); 
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1),
                   0 2px 5px rgba(0, 0, 0, 0.12);
     }
@@ -48,9 +53,9 @@
     /* 3. Input & Slider Styling */
     .calculator-widget label { display:block; margin-bottom:6px; font-weight:600; font-size: 0.95em; }
     .calculator-widget input[type=number] {
-      width:100%; padding:8px 10px; /* Increased padding */
+      width:100%; padding:8px 10px;
       border-radius:8px; 
-      border:1px solid #ddd; /* Lighter border */
+      border:1px solid #ddd;
       box-sizing:border-box;
       -webkit-appearance:none;
       appearance:none;
@@ -59,16 +64,64 @@
     .calculator-widget input[type=number]:focus {
       outline:none; 
       border-color:#2c6e49;
-      background: #fcfcfc; /* Slight background change on focus */
-      box-shadow: 0 0 0 3px rgba(44, 110, 73, 0.2); /* Thicker focus ring */
+      background: #fcfcfc;
+      box-shadow: 0 0 0 3px rgba(44, 110, 73, 0.2);
     }
     .calculator-widget .slider-wrapper {
       display:flex; align-items:center; gap:10px; margin-bottom:5px;
     }
     .calculator-widget input[type=range] {
-      flex:1; height:6px; cursor:pointer; /* Thicker slider track */
+      flex:1; 
+      height: 20px; /* Increased height to make track styling easier to override */
+      cursor:pointer; 
       accent-color:#2c6e49;
+      background: transparent; /* Needed for custom track styles */
+      -webkit-appearance: none;
+      appearance: none;
+      padding: 0;
     }
+
+    /* 🎯 SLIDER TRACK FIX: WebKit (Chrome/Safari) */
+    .calculator-widget input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 6px;
+        background: #e0e0e0;
+        border-radius: 3px;
+        border: none;
+    }
+
+    /* 🎯 SLIDER TRACK FIX: Mozilla (Firefox) */
+    .calculator-widget input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 6px;
+        background: #e0e0e0;
+        border-radius: 3px;
+        border: none;
+    }
+
+    /* Optional: Style the thumb to match */
+    .calculator-widget input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #2c6e49;
+        cursor: pointer;
+        margin-top: -5px; /* Adjust to center the thumb on the 6px track */
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .calculator-widget input[type=range]::-moz-range-thumb {
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #2c6e49;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    /* End Slider Fix */
+    
     .calculator-widget .slider-value {
       min-width:40px; text-align:right;
       font-weight:bold; color:#2c6e49;
@@ -78,13 +131,13 @@
       font-size:0.8em; color:#777; margin-top:8px; line-height:1.4;
     }
 
-    /* 4. Output Section Styling (NEW) */
+    /* 4. Output Section Styling */
     .calculator-widget .card h4 { margin-top:0; margin-bottom:12px; color:#2c6e49; }
     .calculator-widget .output-field {
       display: flex;
       justify-content: space-between;
       margin-bottom: 10px;
-      border-bottom: 1px dashed #eee; /* Subtle separator */
+      border-bottom: 1px dashed #eee;
       padding-bottom: 5px;
       line-height: 1.4;
     }
@@ -97,17 +150,21 @@
       color: #2c6e49; 
       font-weight: bold;
       font-size: 1.15em; 
+      display: inline-block;
+    }
+    .calculator-widget .output-value.animate {
+        animation: result-pop 0.3s ease-out 1;
     }
 
-    /* 5. Summary Section Emphasis (NEW) */
+    /* 5. Summary Section Emphasis */
     .calculator-widget .summary {
       background:#e6f4ea; 
-      padding:15px; /* More padding */
+      padding:15px; 
       border-radius:12px; 
-      margin-top:20px; /* More space to separate it */
+      margin-top:20px; 
       color:#1f4d2f; 
       font-weight:normal;
-      border-left: 6px solid #2c6e49; /* Accent border on the side */
+      border-left: 6px solid #2c6e49;
       font-size: 1.05em;
       line-height: 1.5;
       display: flex;
@@ -120,16 +177,16 @@
         line-height: 1;
         transform: translateY(-2px);
     }
-    .calculator-widget .summary strong { display: block; margin-bottom: 5px; font-size: 1.1em; }
+    .calculator-widget .summary-content strong { display: block; margin-bottom: 5px; font-size: 1.1em; }
 
     /* 6. Optional Toggle Styling */
     .calculator-widget .optional-toggle {
-      background:#d8f0d8; border:none; padding:8px 14px; /* More padding */
-      cursor:pointer; border-radius:8px; /* Consistent radius */
+      background:#d8f0d8; border:none; padding:8px 14px;
+      cursor:pointer; border-radius:8px; 
       color:#2c6e49;
       font-weight:600; 
       display:flex; align-items:center; gap:8px;
-      margin-top:10px; /* Added spacing from previous card */
+      margin-top:10px; 
       margin-bottom:0; 
       transition: background 0.2s, transform 0.1s;
     }
@@ -145,18 +202,19 @@
       opacity:0;
       display:flex;
       flex-wrap:wrap;
-      gap:20px; /* Consistent gap */
-      margin-top: 15px; /* Add margin to separate from toggle */
+      gap:20px;
+      margin-top: 15px;
       transition:max-height 0.5s ease-in-out, opacity 0.4s ease;
     }
     .calculator-widget .optional-section.open {
       opacity:1;
       max-height:1000px;
     }
-    @media(max-width:550px){ /* Adjusted breakpoint slightly */
-      .calculator-widget .card { flex:1 1 100%; } 
-      .calculator-widget .inputs, .calculator-widget .outputs { gap:15px; }
-      .calculator-widget .optional-section { gap:15px; }
+    /* 7. Responsiveness Polish */
+    @media(max-width:550px){ 
+      .calculator-widget { padding: 15px; }
+      .calculator-widget .card { flex:1 1 100%; padding: 12px; }
+      .calculator-widget .inputs, .calculator-widget .outputs, .calculator-widget .optional-section { gap:15px; }
     }
   `;
   document.head.appendChild(style);
@@ -179,8 +237,7 @@
       if(config.layout.show_summary){
         summaryDiv = document.createElement('div');
         summaryDiv.className='summary';
-        // Add structure for icon and title
-        summaryDiv.innerHTML = `<span class="summary-icon">💡</span><div><strong>Uw Resultaat</strong></div>`;
+        summaryDiv.innerHTML = `<span class="summary-icon">💡</span><div class="summary-content"><strong>Uw Resultaat</strong></div>`;
         container.appendChild(summaryDiv);
       }
 
@@ -217,12 +274,10 @@
         card.className='card';
         card.innerHTML = `<h4>${section.label}</h4>`;
         section.fields.forEach(field => {
-          // --- UPDATED OUTPUT RENDERING ---
           const div = document.createElement('div');
           div.className = 'output-field';
           div.innerHTML = `<span class="output-label">${field.label}:</span> <span class="output-value" id="${field.value}">0</span>`;
           card.appendChild(div);
-          // --- END UPDATE ---
           outputElements[field.value] = field;
         });
         outputsDiv.appendChild(card);
@@ -236,7 +291,7 @@
           card.innerHTML = `
             <label for="${input.id}">${input.label}</label>
             <div class="slider-wrapper">
-              <input type="range" id="${input.id}" value="${input.default}" min="${input.min}" max="${input.max}" step="${input.step}">
+              <input type="range" id="${input.id}" value="${input.default}" min="${input.min}" max="${input.max}" step="${input.step}" aria-label="${input.label} schuifregelaar">
               <span class="slider-value">${input.default}</span>
             </div>
             <div class="hint">${input.hint||''}</div>
@@ -252,7 +307,8 @@
             <div class="hint">${input.hint||''}</div>
           `;
           const el = card.querySelector('input');
-          el.addEventListener('input', calculate);
+          el.addEventListener('change', calculate);
+          el.addEventListener('input', calculate); 
           inputElements[input.id] = el;
         }
         parent.appendChild(card);
@@ -261,39 +317,46 @@
       // ✅ Calculation logic
       function calculate(){
         const scope={};
-        config.inputs.forEach(input => { scope[input.id]=parseFloat(inputElements[input.id].value); });
+        config.inputs.forEach(input => { 
+            let val = parseFloat(inputElements[input.id].value);
+            scope[input.id] = isNaN(val) ? 0 : val;
+        });
+        
         config.calculations.forEach(calc=>{
           try{
-            // Regex improved for better variable matching inside formulas
             scope[calc.id] = eval(calc.formula.replace(/\b(\w+)\b/g,(m,name)=>name in scope?`scope.${name}`:name));
           }catch(e){ console.error('Berekeningsfout', calc.id, e); }
         });
+        
         config.outputs.forEach(section=>{
           section.fields.forEach(field=>{
             const val = scope[field.value];
-            if(val!==undefined){
+            const outputEl = document.getElementById(field.value);
+            
+            if(val!==undefined && outputEl){
               const formatted = field.precision!==undefined ? val.toFixed(field.precision) : val;
-              // --- UPDATED OUTPUT TARGETING ---
-              const outputEl = document.getElementById(field.value);
-              if (outputEl) {
-                outputEl.textContent = formatted; // Only set the value, label is static in HTML
+              
+              if(outputEl.textContent !== formatted){
+                outputEl.classList.remove('animate');
+                void outputEl.offsetWidth; 
+                outputEl.classList.add('animate');
               }
-              // --- END UPDATE ---
+              outputEl.textContent = formatted;
             }
           });
         });
+        
         if(summaryDiv){
           let summary = config.layout.summary_template;
           summary = summary.replace(/\{\{(.*?)\}\}/g, (_,expr)=>{
             try{ return eval(expr.replace(/\b(\w+)\b/g,(m,name)=>name in scope?`scope.${name}`:name)); }
             catch(e){ return '?'; }
           });
-          // --- UPDATED SUMMARY TARGETING ---
-          const summaryContentDiv = summaryDiv.querySelector('div:last-child');
+          
+          const summaryContentDiv = summaryDiv.querySelector('.summary-content');
           if (summaryContentDiv) {
             summaryContentDiv.innerHTML = `<strong>Uw Resultaat</strong><br>${summary}`;
           }
-          // --- END UPDATE ---
         }
       }
       calculate();
