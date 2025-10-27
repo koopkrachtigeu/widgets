@@ -1,0 +1,50 @@
+{
+  "title": "Calculator voor Besparingen met Herbruikbare Koffiecapsules",
+  "description": "Bereken hoeveel geld, tijd en CO₂ je kunt besparen door over te stappen van wegwerpkoffiecapsules naar herbruikbare capsules.",
+  "inputs": [
+    {"id":"coffee_price_per_kg","label":"Prijs van koffie per kg (€)","type":"number","default":25,"min":5,"max":80,"step":0.5},
+    {"id":"grams_per_capsule","label":"Gram koffie per capsule (g)","type":"number","default":7,"min":4,"max":12,"step":0.1},
+    {"id":"reusable_set_price","label":"Prijs van een set herbruikbare capsules (€)","type":"number","default":20,"min":5,"max":100,"step":0.5},
+    {"id":"capsules_in_set","label":"Aantal capsules in de set","type":"number","default":3,"min":1,"max":10,"step":1},
+    {"id":"coffees_per_day","label":"Aantal kopjes koffie per dag","type":"number","default":3,"min":1,"max":10,"step":1},
+    {"id":"disposable_capsule_price","label":"Prijs per wegwerpcapsule (€)","type":"number","default":0.4,"min":0.2,"max":1.0,"step":0.01},
+    {"id":"capsule_lifespan","label":"Levensduur herbruikbare capsule (aantal keer gebruik)","type":"number","default":1000,"min":100,"max":2000,"step":50},
+    {"id":"time_per_capsule","label":"Tijd om één capsule te vullen (seconden)","type":"number","default":30,"min":10,"max":120,"step":1}
+  ],
+  "calculations": [
+    {"id":"reusable_cost_per_cup","formula":"(coffee_price_per_kg * grams_per_capsule / 1000) + (reusable_set_price / (capsules_in_set * capsule_lifespan))"},
+    {"id":"disposable_cost_per_cup","formula":"disposable_capsule_price"},
+    {"id":"savings_per_cup","formula":"disposable_cost_per_cup - reusable_cost_per_cup"},
+    {"id":"savings_per_day","formula":"savings_per_cup * coffees_per_day"},
+    {"id":"savings_per_week","formula":"savings_per_day * 7"},
+    {"id":"savings_per_month","formula":"savings_per_day * 30"},
+    {"id":"savings_per_year","formula":"savings_per_day * 365"},
+    {"id":"time_per_day_minutes","formula":"(coffees_per_day * time_per_capsule) / 60"},
+    {"id":"time_per_year_hours","formula":"(time_per_day_minutes * 365) / 60"},
+    {"id":"capsules_avoided_per_year","formula":"coffees_per_day * 365"},
+    {"id":"waste_avoided_kg_per_year","formula":"(capsules_avoided_per_year * 3) / 1000"},
+    {"id":"co2_saved_kg_per_year","formula":"waste_avoided_kg_per_year * 6"},
+    {"id":"payback_days","formula":"reusable_set_price / savings_per_day"}
+  ],
+  "outputs": [
+    {"label":"💰 Financiële Besparingen","fields":[
+      {"label":"Kosten per herbruikbaar kopje (€)","value":"reusable_cost_per_cup","precision":3},
+      {"label":"Kosten per wegwerpkopje (€)","value":"disposable_cost_per_cup","precision":2},
+      {"label":"Besparing per kopje (€)","value":"savings_per_cup","precision":2},
+      {"label":"Besparing per week (€)","value":"savings_per_week","precision":2},
+      {"label":"Besparing per maand (€)","value":"savings_per_month","precision":2},
+      {"label":"Besparing per jaar (€)","value":"savings_per_year","precision":2},
+      {"label":"Terugverdientijd (dagen)","value":"payback_days","precision":1}
+    ]},
+    {"label":"⏱️ Tijdsinvestering","fields":[
+      {"label":"Tijd per dag vullen (minuten)","value":"time_per_day_minutes","precision":1},
+      {"label":"Tijd per jaar vullen (uren)","value":"time_per_year_hours","precision":1}
+    ]},
+    {"label":"🌍 Milieu-impact","fields":[
+      {"label":"Wegwerpcapsules vermeden per jaar","value":"capsules_avoided_per_year","precision":0},
+      {"label":"Afvalvermijding (kg/jaar)","value":"waste_avoided_kg_per_year","precision":2},
+      {"label":"Geschatte CO₂-besparing (kg/jaar)","value":"co2_saved_kg_per_year","precision":1}
+    ]}
+  ],
+  "layout":{"style":"cards","color_theme":"green","show_summary":true,"summary_template":"Door over te stappen op herbruikbare capsules bespaar je €{{savings_per_year.toFixed(2)}} per jaar en voorkom je {{co2_saved_kg_per_year.toFixed(1)}} kg CO₂-uitstoot!"}
+}
