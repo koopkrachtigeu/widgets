@@ -4,7 +4,6 @@
   const configUrl = container.getAttribute('data-config');
   if (!configUrl) return;
 
-  // ✅ FINAL UPDATED CSS with animation, accessibility, and SLIDER TRACK FIX
   const style = document.createElement('style');
   style.textContent = `
     /* Keyframe Animation for Result Pop */
@@ -76,8 +75,6 @@
       cursor:pointer; 
       accent-color:#2c6e49;
       background: transparent; /* Needed for custom track styles */
-      -webkit-appearance: none;
-      appearance: none;
       padding: 0;
     }
 
