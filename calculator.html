@@ -1,1 +1,72 @@
-todo
+<div id="calculator-widget"></div>
+<style>
+.calculator-widget { font-family: Arial, sans-serif; background:#f6f9f6; padding:15px; border-radius:12px; }
+.calculator-widget h2 { color:#2c6e49; }
+.calculator-widget .inputs, .calculator-widget .outputs { display:flex; flex-wrap:wrap; gap:15px; margin-top:10px; }
+.calculator-widget .card { background:#fff; padding:15px; border-radius:10px; box-shadow:0 3px 8px rgba(0,0,0,0.05); flex:1 1 200px; }
+.calculator-widget label { display:block; margin-bottom:5px; font-weight:bold; }
+.calculator-widget input[type=number], .calculator-widget input[type=range] { width:100%; margin-bottom:8px; }
+.calculator-widget input[type=range] { accent-color:#2c6e49; }
+.calculator-widget .summary { background:#e6f4ea; padding:10px; border-radius:10px; margin-top:10px; color:#1f4d2f; font-weight:bold; }
+</style>
+<script>
+(async function(){
+  const container = document.getElementById('calculator-widget');
+  const configUrl = container.getAttribute('data-config');
+  const res = await fetch(configUrl);
+  const config = await res.json();
+
+  container.classList.add('calculator-widget');
+  container.innerHTML = `<h2>${config.title}</h2><p>${config.description}</p>`;
+
+  const inputsDiv = document.createElement('div'); inputsDiv.className='inputs'; container.appendChild(inputsDiv);
+  const outputsDiv = document.createElement('div'); outputsDiv.className='outputs'; container.appendChild(outputsDiv);
+  let summaryDiv;
+  if(config.layout.show_summary){ summaryDiv = document.createElement('div'); summaryDiv.className='summary'; container.appendChild(summaryDiv); }
+
+  const inputElements={};
+  config.inputs.forEach(input=>{
+    const card = document.createElement('div'); card.className='card';
+    card.innerHTML=`<label for="${input.id}">${input.label}</label><input type="${input.type}" id="${input.id}" value="${input.default}" min="${input.min}" max="${input.max}" step="${input.step}">`;
+    inputsDiv.appendChild(card);
+    inputElements[input.id]=card.querySelector('input');
+    inputElements[input.id].addEventListener('input',calculate);
+  });
+
+  const outputElements={};
+  config.outputs.forEach(section=>{
+    const card = document.createElement('div'); card.className='card';
+    card.innerHTML=`<h4>${section.label}</h4>`;
+    section.fields.forEach(field=>{
+      const div = document.createElement('div'); div.id=field.value; div.textContent=`${field.label}: 0`;
+      card.appendChild(div);
+      outputElements[field.value]=field;
+    });
+    outputsDiv.appendChild(card);
+  });
+
+  function calculate(){
+    const scope={};
+    config.inputs.forEach(input=>{ scope[input.id]=parseFloat(inputElements[input.id].value); });
+    config.calculations.forEach(calc=>{
+      try{ scope[calc.id]=eval(calc.formula.replace(/\b(\w+)\b/g,(m,name)=>name in scope?`scope.${name}`:name)); }
+      catch(e){ console.error(e); }
+    });
+    config.outputs.forEach(section=>{
+      section.fields.forEach(field=>{
+        if(scope[field.value]!==undefined){
+          const val=(field.precision!==undefined)?scope[field.value].toFixed(field.precision):scope[field.value];
+          document.getElementById(field.value).textContent=`${field.label}: ${val}`;
+        }
+      });
+    });
+    if(summaryDiv){
+      let summary=config.layout.summary_template;
+      summary=summary.replace(/\{\{(.*?)\}\}/g,(m,expr)=>{ try{return eval(expr.replace(/\b(\w+)\b/g,(m,name)=>name in scope?`scope.${name}`:name)); }catch(e){return '?';} });
+      summaryDiv.textContent=summary;
+    }
+  }
+
+  calculate();
+})();
+</script>
