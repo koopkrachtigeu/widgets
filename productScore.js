@@ -127,7 +127,8 @@ async function initKoopkracht(id, containerEl) {
   containerEl.innerHTML = "⏳ Koopkrachtgegevens laden...";
   try {
     const country = await getCountry();
-    const url = `https://api.koopkrachtig.eu/macros/s/AKfycbw_7AV-HIqLMy7iWWO9IKSXfjufFgSlChgcdqfcbZ2-I3Lg-jDh_yQN77BPSBwhw1Wl/exec?country=${country}&id=${encodeURIComponent(id)}`;
+    //const url = `https://api.koopkrachtig.eu/macros/s/AKfycbw_7AV-HIqLMy7iWWO9IKSXfjufFgSlChgcdqfcbZ2-I3Lg-jDh_yQN77BPSBwhw1Wl/exec?country=${country}&id=${encodeURIComponent(id)}`;
+    const url = `https://script.google.com/macros/s/AKfycbw_7AV-HIqLMy7iWWO9IKSXfjufFgSlChgcdqfcbZ2-I3Lg-jDh_yQN77BPSBwhw1Wl/exec?country=${country}&id=${encodeURIComponent(id)}`;
     const res = await fetch(url);
     const data = await res.json();
     containerEl.innerHTML = data.success
