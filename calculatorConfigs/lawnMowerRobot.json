@@ -177,11 +177,6 @@
           "label": "Besparing per jaar (€)",
           "value": "yearly_money_saved",
           "precision": 2
-        },
-        {
-          "label": "Terugverdientijd (jaar)",
-          "value": "payback_years",
-          "precision": 1
         }
       ]
     },
