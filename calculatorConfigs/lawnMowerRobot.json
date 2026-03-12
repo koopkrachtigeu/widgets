@@ -1,0 +1,215 @@
+{
+  "title": "Bereken je Besparing met een Robotmaaier",
+  "description": "Ontdek hoeveel tijd, benzine, geld en CO₂ je jaarlijks kunt besparen door een robotmaaier te gebruiken in plaats van zelf te maaien.",
+  "inputs": [
+    {
+      "id": "lawn_size_m2",
+      "label": "Grootte van je gazon (m²)",
+      "type": "slider",
+      "default": 500,
+      "min": 50,
+      "max": 5000,
+      "step": 50,
+      "hint": "Hoe groot is het gras dat je moet maaien?",
+      "required": true
+    },
+    {
+      "id": "mowing_frequency_week",
+      "label": "Aantal maaibeurten per week",
+      "type": "slider",
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "hint": "Hoe vaak maai je gemiddeld per week tijdens het seizoen?",
+      "required": true
+    },
+    {
+      "id": "mowing_season_weeks",
+      "label": "Aantal weken maaiseizoen per jaar",
+      "type": "slider",
+      "default": 30,
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "hint": "In Europa is dit meestal ±25–32 weken.",
+      "required": true
+    },
+    {
+      "id": "time_per_100m2",
+      "label": "Maaitijd per 100 m² (minuten)",
+      "type": "number",
+      "default": 5,
+      "min": 2,
+      "max": 20,
+      "step": 0.5,
+      "hint": "Hoe lang duurt het ongeveer om 100 m² te maaien?",
+      "required": false
+    },
+    {
+      "id": "fuel_per_hour",
+      "label": "Brandstofverbruik grasmaaier (liter/uur)",
+      "type": "number",
+      "default": 1,
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1,
+      "hint": "Gemiddelde benzineconsumptie van een grasmaaier.",
+      "required": false
+    },
+    {
+      "id": "fuel_price",
+      "label": "Benzineprijs (€ per liter)",
+      "type": "number",
+      "default": 1.9,
+      "min": 1.3,
+      "max": 3,
+      "step": 0.01,
+      "hint": "Gemiddelde benzineprijs.",
+      "required": false
+    },
+    {
+      "id": "robot_price",
+      "label": "Prijs robotmaaier (€)",
+      "type": "number",
+      "default": 1200,
+      "min": 300,
+      "max": 4000,
+      "step": 50,
+      "hint": "Gemiddelde aankoopprijs van een robotmaaier.",
+      "required": false
+    },
+    {
+      "id": "electricity_per_year",
+      "label": "Elektriciteitsverbruik robotmaaier (kWh/jaar)",
+      "type": "number",
+      "default": 60,
+      "min": 20,
+      "max": 200,
+      "step": 5,
+      "hint": "Gemiddeld verbruik van robotmaaiers.",
+      "required": false
+    },
+    {
+      "id": "electricity_price",
+      "label": "Elektriciteitsprijs (€ per kWh)",
+      "type": "number",
+      "default": 0.30,
+      "min": 0.1,
+      "max": 0.7,
+      "step": 0.01,
+      "hint": "Gemiddelde stroomprijs.",
+      "required": false
+    }
+  ],
+  "calculations": [
+    {
+      "id": "time_per_mow_minutes",
+      "formula": "(lawn_size_m2 / 100) * time_per_100m2"
+    },
+    {
+      "id": "time_per_year_hours",
+      "formula": "(time_per_mow_minutes * mowing_frequency_week * mowing_season_weeks) / 60"
+    },
+    {
+      "id": "fuel_used_per_year",
+      "formula": "time_per_year_hours * fuel_per_hour"
+    },
+    {
+      "id": "fuel_cost_per_year",
+      "formula": "fuel_used_per_year * fuel_price"
+    },
+    {
+      "id": "robot_electricity_cost",
+      "formula": "electricity_per_year * electricity_price"
+    },
+    {
+      "id": "yearly_money_saved",
+      "formula": "fuel_cost_per_year - robot_electricity_cost"
+    },
+    {
+      "id": "payback_years",
+      "formula": "robot_price / yearly_money_saved"
+    },
+    {
+      "id": "co2_petrol",
+      "formula": "fuel_used_per_year * 2.31"
+    },
+    {
+      "id": "co2_electricity",
+      "formula": "electricity_per_year * 0.4"
+    },
+    {
+      "id": "co2_saved",
+      "formula": "co2_petrol - co2_electricity"
+    }
+  ],
+  "outputs": [
+    {
+      "label": "⏱️ Tijd Besparing",
+      "fields": [
+        {
+          "label": "Tijd besteed aan maaien per jaar (uur)",
+          "value": "time_per_year_hours",
+          "precision": 1
+        }
+      ]
+    },
+    {
+      "label": "⛽ Brandstof & Kosten",
+      "fields": [
+        {
+          "label": "Benzineverbruik per jaar (liter)",
+          "value": "fuel_used_per_year",
+          "precision": 1
+        },
+        {
+          "label": "Brandstofkosten per jaar (€)",
+          "value": "fuel_cost_per_year",
+          "precision": 2
+        },
+        {
+          "label": "Elektriciteitskosten robot (€)",
+          "value": "robot_electricity_cost",
+          "precision": 2
+        },
+        {
+          "label": "Besparing per jaar (€)",
+          "value": "yearly_money_saved",
+          "precision": 2
+        },
+        {
+          "label": "Terugverdientijd (jaar)",
+          "value": "payback_years",
+          "precision": 1
+        }
+      ]
+    },
+    {
+      "label": "🌍 Milieu-impact",
+      "fields": [
+        {
+          "label": "CO₂ uitstoot benzine maaien (kg/jaar)",
+          "value": "co2_petrol",
+          "precision": 1
+        },
+        {
+          "label": "CO₂ uitstoot robotmaaier (kg/jaar)",
+          "value": "co2_electricity",
+          "precision": 1
+        },
+        {
+          "label": "CO₂ besparing (kg/jaar)",
+          "value": "co2_saved",
+          "precision": 1
+        }
+      ]
+    }
+  ],
+  "layout": {
+    "style": "cards",
+    "color_theme": "green",
+    "show_summary": true,
+    "summary_template": "Met een robotmaaier bespaar je ongeveer {{time_per_year_hours.toFixed(1)}} uur maaien per jaar, €{{yearly_money_saved.toFixed(2)}} aan brandstof en verminder je je CO₂-uitstoot met {{co2_saved.toFixed(1)}} kg per jaar."
+  }
+}
